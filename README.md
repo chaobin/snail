@@ -12,7 +12,6 @@ var drawer = new snail.Drawer(7);
 drawer.prepare();
 drawer.draw();
 snail.ui.draw(drawer._zeros);
-
 ```
 
 And you see:
@@ -26,5 +25,9 @@ And you see:
 39 18 05 04 03 12 29 
 38 17 16 15 14 13 30 
 37 36 35 34 33 32 31
-
 ```
+
+Demo
+---
+
+Here is a live [demo](https://github.com/chaobin/snail "snail").
