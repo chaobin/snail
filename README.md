@@ -8,10 +8,37 @@ Usage
 
 ```javascript
 
-var drawer = new snail.Drawer(7);
+var drawer = new snail.Drawer(1); // size = 1
 drawer.prepare();
 drawer.draw();
 snail.ui.draw(drawer._zeros);
+```
+
+And you see:
+
+```
+1
+```
+
+```javascript
+
+var drawer = new snail.Drawer(4); // size = 4
+
+```
+
+And you see:
+
+```
+
+07 08 09 10
+06 01 02 11
+05 04 03 12
+16 15 14 13
+```
+
+```javascript
+
+var drawer = new snail.Drawer(7); // size = 7
 ```
 
 And you see:
