@@ -8,10 +8,10 @@ Usage
 
 ```javascript
 
-var drawer = new snail.Drawer(1); // size = 1
-drawer.prepare();
-drawer.draw();
-snail.ui.draw(drawer._zeros);
+var sn = new snail.Snail(1); // size = 1
+sn.prepare();
+sn.draw();
+snail.ui.draw(sn._zeros);
 ```
 
 And you see:
@@ -22,7 +22,7 @@ And you see:
 
 ```javascript
 
-var drawer = new snail.Drawer(4); // size = 4
+var sn = new snail.Snail(4); // size = 4
 
 ```
 
@@ -38,7 +38,7 @@ And you see:
 
 ```javascript
 
-var drawer = new snail.Drawer(7); // size = 7
+var sn = new snail.Snail(7); // size = 7
 ```
 
 And you see:
