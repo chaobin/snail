@@ -2,9 +2,10 @@
 
   "use strict";
 
-  var drawer = new snail.Drawer(7);
-  drawer.prepare();
-  drawer.draw();
-  snail.ui.draw(drawer._zeros);
+  var sn = new snail.Snail(9);
+  sn.prepare();
+  sn.draw();
+  snail.ui.draw(sn._zeros);
+  snail.ui.animate(sn);
 
 })();

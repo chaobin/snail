@@ -16,24 +16,10 @@
 
   snail.ui = {};
 
-  snail.ui.zero = '0';
 
   snail.ui.print = function (chars, width) {
-    /**
-     * Print, but left-justify output with '0'.
-    **/
     var chars = chars.toString();
-    
-    if (chars.length < width) {
-      var zeros = [];
-      var offset = (width - chars.length) - 1;
-      for (var i = 0; i <= offset; i++) {
-        zeros.push(snail.ui.zero);
-      }
-      zeros = zeros.join('');
-      chars = (zeros + chars);
-    }
-    document.write(chars + ' ');
+    document.write(chars);
   }
 
   snail.ui.println = function (chars) {
@@ -45,7 +31,6 @@
      * Print the pattern into ducument.
     **/
     var size = matrix.length;
-    var width = Math.pow(size, 2).toString().length;
 
     for (var x = 0; x < size; x++) {
 
@@ -54,20 +39,70 @@
         if (n < 0) {
           continue;
         }
-        snail.ui.print(n, width);
+        snail.ui.pointToDiv(n, x, y);
       }
       snail.ui.println('');
     }
   }
 
-  snail.ui.animate = function (matrix) {
+  snail.ui.makeIdFromXY = function (x, y) {
+    return 'p' + x + y;
+  }
+
+  snail.ui.pointToDiv = function (n, x, y) {
+    /**
+     * IMPORTANT! This function isn't something permenant.
+     *
+     */
+    var _id = snail.ui.makeIdFromXY(x, y);
+
+    var div = '<div class="point" id=' + _id + '>' + n + '</div>';
     
+    snail.ui.print(div);
+  }
+
+  snail.ui.breathe = function (divPoint) {
+    /**
+     * Replace something inside a located
+     * point div to make it look funny.
+     * Since being too fast makes it impossible
+     * for human-eyes to see the transition,
+     * this function should be instead called
+     * using setInterval() with a reasonable
+     * amount of pause.
+     *
+    **/
+    var oldCtt = divPoint.innerHTML;
+    var newCtt = '*';
+    divPoint.innerHTML = newCtt;
+  }
+
+  snail.ui.animate = function (pattern) {
+    /**
+     * Traverse the pattern, using the coordinates
+     * to animate the pattern in one of the many funny
+     * ways.
+     *
+    **/
+
+    var i = 1;
+    setInterval(function () {
+      if (i > pattern.pow) {
+        clearInterval(window.animator);
+        return;
+      }
+      var point = pattern._map[i];
+      var _id = snail.ui.makeIdFromXY(point.x, point.y);
+      var divPoint = document.getElementById(_id);
+      snail.ui.breathe(divPoint);
+      i++;
+    }, 100);
   }
 
   /**
    * Class used to calculate the snail-like spiral pattern.
   **/
-  snail.Drawer = function (size) {
+  snail.Snail = function (size) {
 
     var that = this;
 
@@ -161,6 +196,9 @@
        * spiral to the center of the pattern.
        *
       **/
+      if (that._map.length > 0) { // Means already calculated.
+        return;
+      }
 
       var n = 0, pow, topLeft, bottomLeft, bottomRight;
 
