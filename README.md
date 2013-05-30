@@ -30,4 +30,4 @@ And you see:
 Demo
 ---
 
-Here is a live [demo](https://github.com/chaobin/snail "snail").
+Here is a live [demo](http://chaobin.github.io/2013/05/30/printing-spiral-numbers-with-js/ "snail").
