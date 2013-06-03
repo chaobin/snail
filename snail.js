@@ -4,112 +4,20 @@
  *
 **/
 
-(function () {
+(function ($) {
 
   "use strict";
 
   /**
    * External name
   **/
-  var snail = window.snail || {};
-  window.snail = snail;
-
-  snail.ui = {};
-
-
-  snail.ui.print = function (chars, width) {
-    var chars = chars.toString();
-    document.write(chars);
-  }
-
-  snail.ui.println = function (chars) {
-    document.writeln(chars + '</br>');
-  }
-
-  snail.ui.draw = function (matrix) {
-    /**
-     * Print the pattern into ducument.
-    **/
-    var size = matrix.length;
-    var prime = new Prime();
-    var isPrime = false;
-
-    for (var x = 0; x < size; x++) {
-
-      for (var y = 0; y < size; y++) {
-        var n = matrix[x][y];
-        if (n < 0) {
-          continue;
-        }
-        isPrime = prime.isPrime(n);
-        snail.ui.pointToDiv(n, x, y, isPrime);
-      }
-      snail.ui.println('');
-    }
-  }
-
-  snail.ui.makeIdFromXY = function (x, y) {
-    return 'p' + x + y;
-  }
-
-  snail.ui.pointToDiv = function (n, x, y, isPrime) {
-    /**
-     * IMPORTANT! This function isn't something permenant.
-     *
-     */
-    var _id = snail.ui.makeIdFromXY(x, y);
-
-    if (isPrime) {
-      var div = '<div class="point prime" id=' + _id + '" title="' + n + '"></div>';
-    } else {
-      var div = '<div class="point" id=' + _id + '" title="' + n + '"></div>';
-    }
-
-    snail.ui.print(div);
-  }
-
-  snail.ui.breathe = function (divPoint) {
-    /**
-     * Replace something inside a located
-     * point div to make it look funny.
-     * Since being too fast makes it impossible
-     * for human-eyes to see the transition,
-     * this function should be instead called
-     * using setInterval() with a reasonable
-     * amount of pause.
-     *
-    **/
-    var oldCtt = divPoint.innerHTML;
-    var newCtt = '*';
-    divPoint.innerHTML = newCtt;
-  }
-
-  snail.ui.animate = function (pattern) {
-    /**
-     * Traverse the pattern, using the coordinates
-     * to animate the pattern in one of the many funny
-     * ways.
-     *
-    **/
-
-    var i = 1;
-    window.animator = setInterval(function () {
-      if (i > pattern.pow) {
-        clearInterval(window.animator);
-        return;
-      }
-      var point = pattern._map[i];
-      var _id = snail.ui.makeIdFromXY(point.x, point.y);
-      var divPoint = document.getElementById(_id);
-      snail.ui.breathe(divPoint);
-      i++;
-    }, 100);
-  }
+  var ulamespiral = window.ulamespiral || {};
+  window.ulamespiral = ulamespiral;
 
   /**
-   * Class used to calculate the snail-like spiral pattern.
+   * Class used to calculate the Ulame Spiral.
   **/
-  snail.Snail = function (size) {
+  ulamespiral.UlameSpiral = function (size) {
 
     var that = this;
 
@@ -207,18 +115,15 @@
         return;
       }
 
+      that.prepare();
+
       var n = 0, pow, topLeft, bottomLeft, bottomRight;
 
       for (var x = 0; x < that.size; x++) {
         for (var y = 0, last = that.tail; y < that.size; y++) {
 
           var corr = that.corrByPoint(x, y);
-          /*
-          if (y != last) {
-            snail.ui.print(corr + ' - ');
-          } else {
-            snail.ui.print(corr);
-          }*/
+
           pow = Math.pow(corr, 2);
           topLeft = pow - (corr - 1);
           bottomLeft = topLeft - (corr - 1);
@@ -285,4 +190,140 @@
     }
   }
 
-})();
+  ulamespiral.Plotter = function (options) {
+    /**
+     * Class that plots certain
+     * interesting numbers, such as prime
+     * number, triangle number, on a pre-calculated
+     * Ulame Spiral instance.
+     *
+    **/
+
+    var that = this;
+
+    that.spiral = options.spiral;
+    that.$el = options.wrapper;
+
+
+    that.print = function (chars) {
+      var chars = chars.toString();
+      document.write(chars);
+    }
+
+    that.println = function (chars) {
+      document.writeln(chars + '</br>');
+    }
+
+    that.draw = function (spiral, plotter) {
+      /**
+       * Print the pattern into ducument.
+       * 
+       * param spiral: the UlameSpiral instance
+       * plotter: a function that decides whether
+       *    and how to plot a point.
+      **/
+
+      var matrix = spiral._zeros;
+      var size = matrix.length;
+
+      for (var x = 0; x < size; x++) {
+
+        for (var y = 0; y < size; y++) {
+          var n = matrix[x][y];
+          if (n < 0) {
+            // Ignore -1, the left and top 'border' for spirals of size of an even number.
+            continue;
+          }
+          plotter(n);
+        }
+        that.println('');
+      }
+    }
+
+    that.makeIdFromXY = function (x, y) {
+      return 'p' + x + y;
+    }
+
+    that.pointToDiv = function (n, x, y, isPrime) {
+      /**
+       * IMPORTANT! This function isn't something permenant.
+       *
+       */
+
+      var _id = that.makeIdFromXY(x, y);
+
+      if (isPrime) {
+        var div = '<div class="point prime" id=' + _id + '" title="' + n + '"></div>';
+      } else {
+        var div = '<div class="point" id=' + _id + '" title="' + n + '"></div>';
+      }
+
+      that.print(div);
+    }
+
+    that.plot = function (klassName, number) {
+      
+
+    }
+
+    that.breathe = function (divPoint) {
+      /**
+       * Replace something inside a located
+       * point div to make it look funny.
+       * Since being too fast makes it impossible
+       * for human-eyes to see the transition,
+       * this function should be instead called
+       * using setInterval() with a reasonable
+       * amount of pause.
+       *
+      **/
+      var oldCtt = divPoint.innerHTML;
+      var newCtt = '*';
+      divPoint.innerHTML = newCtt;
+    }
+
+    that.animate = function (pattern) {
+      /**
+       * Traverse the pattern, using the coordinates
+       * to animate the pattern in one of the many funny
+       * ways.
+       *
+      **/
+
+      var i = 1;
+      window.animator = setInterval(function () {
+        if (i > pattern.pow) {
+          clearInterval(window.animator);
+          return;
+        }
+        var point = pattern._map[i];
+        var _id = that.makeIdFromXY(point.x, point.y);
+        var divPoint = document.getElementById(_id);
+        that.breathe(divPoint);
+        i++;
+      }, 100);
+    }
+
+    primes: function (number) {
+      /**
+       *
+       * Plot all found prime numbers on the spiral
+       * pattern, to demonstrate an interesting feature
+       * of prime numbers, that they tend to appear
+       * in a line as much as possible in this spiral
+       * pattern.
+       *
+      **/
+      if (that.prime == undefined) {
+        that.prime = new Prime();
+        that.isPrime = false;
+      }
+      that.isPrime = that.prime.isPrime(number);
+      if (that.isPrime) {
+        that.plot('prime', number);
+      }
+    }
+
+  }
+
+})(jQuery);

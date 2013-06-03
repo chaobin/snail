@@ -3,6 +3,8 @@ snail
 
 An algorithm implemented in Javascript that prints spiral pattern like that of one snail.
 
+I didn't know until someone at work handed me a math magazine where Prime Number is discussed, and this very pattern is called an Ulame Spiral.
+
 Usage
 ---
 
