@@ -86,7 +86,7 @@
     **/
 
     var i = 1;
-    setInterval(function () {
+    window.animator = setInterval(function () {
       if (i > pattern.pow) {
         clearInterval(window.animator);
         return;
