@@ -3,16 +3,55 @@
     <style type="text/css" media="screen">
     body {
       font-size: 65%;
-      line-height: 1.5;
+      line-height: 0.5;
     }
     .point {
-      width: 20px;
+      height: 2px;
+      width: 2px;
       float: left;
+      padding: none;
+      margin: 2px;
+      text-align: center;
+    }
+
+    .prime {
+      background-color: black;
     }
     </style>
   </head>
   <body>
   </body>
+  <script type="text/javascript" src="http://mathjs.org/js/lib/math.min.js"></script>
+  <script type="text/javascript">
+
+    // calculate successive prime numbers
+    var Prime = function() {
+        // current prime number
+        this.prime = 1;
+
+        // return true if NUM is prime
+        this.isPrime = function(num) {
+            var result = true;
+            if (num !== 2) {
+                if (num % 2 == 0) {
+                    result = false;
+                } else {
+                    for (x=3; x<=Math.sqrt(num); x+=2) {
+                        if (num % x == 0) result = false;
+                    }
+                }
+            }
+            return result;
+        }
+
+        // return next prime number
+        this.nextPrime = function() {
+            this.prime++;
+            while (!this.isPrime(this.prime)) this.prime++;
+            return this.prime;
+        }
+    }
+  </script>
   <script type="text/javascript" src="snail.js"></script>
   <script type="text/javascript" src="main.js"></script>
 </html>

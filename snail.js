@@ -31,6 +31,8 @@
      * Print the pattern into ducument.
     **/
     var size = matrix.length;
+    var prime = new Prime();
+    var isPrime = false;
 
     for (var x = 0; x < size; x++) {
 
@@ -39,7 +41,8 @@
         if (n < 0) {
           continue;
         }
-        snail.ui.pointToDiv(n, x, y);
+        isPrime = prime.isPrime(n);
+        snail.ui.pointToDiv(n, x, y, isPrime);
       }
       snail.ui.println('');
     }
@@ -49,15 +52,19 @@
     return 'p' + x + y;
   }
 
-  snail.ui.pointToDiv = function (n, x, y) {
+  snail.ui.pointToDiv = function (n, x, y, isPrime) {
     /**
      * IMPORTANT! This function isn't something permenant.
      *
      */
     var _id = snail.ui.makeIdFromXY(x, y);
 
-    var div = '<div class="point" id=' + _id + '>' + n + '</div>';
-    
+    if (isPrime) {
+      var div = '<div class="point prime" id=' + _id + '" title="' + n + '"></div>';
+    } else {
+      var div = '<div class="point" id=' + _id + '" title="' + n + '"></div>';
+    }
+
     snail.ui.print(div);
   }
 
