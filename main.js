@@ -4,7 +4,7 @@
 
   function start () {
 
-    var spiral = new ulamespiral.UlameSpiral(10);
+    var spiral = new ulamespiral.UlameSpiral(200);
     spiral.draw();
 
     var plotter = new ulamespiral.Plotter({
