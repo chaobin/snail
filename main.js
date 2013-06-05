@@ -2,31 +2,34 @@
 
   "use strict";
 
-  function start () {
+  function createManyPlots (sizePlot, numPlots) {
 
-    var spiral = new ulamespiral.UlameSpiral(200);
+    var spiral = new ulamespiral.UlameSpiral(sizePlot);
     spiral.draw();
 
-    var plotter = new ulamespiral.Plotter({
-      'spiral': spiral,
-      'tag': 'p1',
-      'el': '#plots'
-    });
-    plotter.plot('all');
+    var plotters = {};
 
-    var plotter = new ulamespiral.Plotter({
-      'spiral': spiral,
-      'tag': 'p2',
-      'el': '#plots'
-    });
-    plotter.plot('prime');
+    for (var i = 1; i <= numPlots; i++) {
+      var plotter = new ulamespiral.Plotter({
+        'spiral': spiral,
+        'tag': ('p' + i),
+        'el': '#plots'
+      });
+      plotters[i] = plotter;
+      plotter.plot('all');
+    }
 
-    var plotter = new ulamespiral.Plotter({
-      'spiral': spiral,
-      'tag': 'p3',
-      'el': '#plots'
-    });
-    plotter.plot('triangle');
+    for (var i in plotters) {
+      var plotter = plotters[i];
+      plotter.animate({
+        'speed': 10,
+        'icon': '.'
+      });
+    }
+  }
+
+  function start () {
+    createManyPlots(20, 1);
   }
 
   start();

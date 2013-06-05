@@ -3,14 +3,22 @@ body {
   line-height: 0.38;
 }
 
-.plots {
-  border: 1px solid black;
+.main {
+  border-top: 1px dashed gray;
+  border-bottom: 1px dashed gray;
   padding: 5px;
   margin-top: 10px;
+  width: 80%;
+  margin: 0 auto;
 }
 
 .spiral {
   margin: 5px;
+  float: left;
+}
+
+.clearing {
+  clear: both;
 }
 
 .point {
@@ -23,5 +31,5 @@ body {
 }
 
 .highlight {
-  background-color: black;
+
 }

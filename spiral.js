@@ -60,9 +60,31 @@
         'id': _id,
         'title': that.n
       });
+      that.$el = div; // Cache this
       return div;
     }
 
+    that.highlighted = function () {
+      return that.$el.hasClass('highlight');
+    }
+
+    that.animate = function (options) {
+      /**
+       *
+       * Replace something inside a located
+       * point div to make it look funny.
+       * Since being too fast makes it impossible
+       * for human-eyes to see the transition,
+       * this function should be instead called
+       * using setInterval() with a reasonable
+       * amount of pause.
+       *
+       *
+      **/
+      if ( that.highlighted() ) {
+        that.$el.html(options.icon);
+      }
+    }
   }
 
   /**
@@ -142,12 +164,12 @@
        * given the coordinates in the matrix.
       **/
       
-      var distance_x = that.distance(x);
-      var distance_y = that.distance(y);
+      var distanceX = that.distance(x);
+      var distanceY = that.distance(y);
 
-      var corrIndex = distance_x;
-      if ( distance_x < distance_y ) {
-        corrIndex = distance_x + (distance_y - distance_x);
+      var corrIndex = distanceX;
+      if ( distanceX < distanceY ) {
+        corrIndex = distanceX + (distanceY - distanceX);
       }
 
       return that._corrs[corrIndex + 1];
@@ -257,6 +279,8 @@
     that.$el = $(options.el); // selector of container that this spiral goes into
     that.tag = options.tag; // unique tag for this spiral plot
     that.klass = 'spiral'; // class name for spiral div
+    that._map = {}; // stores the point instances for later re-use
+    that.highlightedPoints = {}; // stores all highlighted points for later re-use
 
     that.init = function () {
       /**
@@ -293,7 +317,9 @@
             // Ignore -1, the left and top 'border' for spirals of size of an even number.
             continue;
           }
-          that[plotter](new ulamespiral.Point(n, x, y));
+          var point = new ulamespiral.Point(n, x, y);
+          that._map[n] = point;
+          that[plotter](point);
         }
         that.newLine();
       }
@@ -305,6 +331,8 @@
       var pointDiv = point.toDivWithID(_id);
       if (highlight) {
         pointDiv.addClass('highlight');
+        // Store a map of all highlighted points
+        that.highlightedPoints[point.n] = point;
       }
       pointDiv.appendTo(that.container);
     }
@@ -347,25 +375,7 @@
       that.drawPoint(point, highlight);
     }
 
-    that.breathe = function (divPoint) {
-      /**
-       *
-       * Replace something inside a located
-       * point div to make it look funny.
-       * Since being too fast makes it impossible
-       * for human-eyes to see the transition,
-       * this function should be instead called
-       * using setInterval() with a reasonable
-       * amount of pause.
-       *
-       *
-      **/
-      var oldCtt = divPoint.innerHTML;
-      var newCtt = '*';
-      divPoint.innerHTML = newCtt;
-    }
-
-    that.animate = function (pattern) {
+    that.animate = function (options) {
       /**
        *
        * Traverse the pattern, using the coordinates
@@ -375,17 +385,53 @@
       **/
 
       var i = 1;
+      // Localize the name for speed, slightly though
+      var spiral = that.spiral;
+      var pow = spiral.pow;
+      var _map = that._map;
+
+      var icon = options.icon;
+
       window.animator = setInterval(function () {
-        if (i > pattern.pow) {
+        if (i > pow) {
           clearInterval(window.animator);
           return;
         }
-        var point = pattern._map[i];
-        var _id = that.makeIdFromXY(point.x, point.y);
-        var divPoint = document.getElementById(_id);
-        that.breathe(divPoint);
+        var point = _map[i];
+        point.animate({'icon': icon});
         i++;
-      }, 100);
+      }, options.speed);
+    }
+
+    that.animateHighlighted = function (options) {
+      /**
+       *
+       * Same as animate(), but only animates the
+       * highlighted points, sometimes this makes more
+       * sense because the animation is much faster to be seen.
+       *
+      **/
+
+      // Localize the name for speed, slightly though
+      var pointIndexes = Object.keys(that.highlightedPoints);
+      var points = that.highlightedPoints;
+      var stop = points.length;
+
+      var icon = options.icon;
+      var reversed = options.direction;
+
+      var i = 0;
+
+      window.animator = setInterval(function () {
+        if (i >= stop) {
+          clearInterval(window.animator);
+          return;
+        }
+        var point = points[pointIndexes[i]];
+        point.animate({'icon': icon});
+
+        i++;
+      }, options.speed);
     }
 
     // Initialize the instance
