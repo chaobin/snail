@@ -1,22 +1,21 @@
 snail
 =====
 
-An algorithm implemented in Javascript that prints spiral pattern like that of one snail.
+An algorithm implemented in Javascript that prints an ["Ulame Spiral"](http://en.wikipedia.org/wiki/Ulam_spiral "Ulame Spiral").
 
-I didn't know until someone at work handed me a math magazine where Prime Number is discussed, and this very pattern is called an Ulame Spiral.
+I didn't know until someone at work handed me a math magazine where Prime Number is discussed, and this very pattern is called an ["Ulame Spiral"](http://en.wikipedia.org/wiki/Ulam_spiral "Ulame Spiral").
 
 Usage
 ---
 
 ```javascript
 
-var sn = new snail.Snail(1); // size = 1
-sn.prepare();
-sn.draw();
-snail.ui.draw(sn._zeros);
+var spiral = new ulamespiral.UlameSpiral(1); // size = 1
+spiral.draw();
+
 ```
 
-And you see:
+And you get:
 
 ```
 1
@@ -24,7 +23,7 @@ And you see:
 
 ```javascript
 
-var sn = new snail.Snail(4); // size = 4
+var spiral = new ulamespiral.UlameSpiral(4); // size = 4
 
 ```
 
@@ -40,7 +39,7 @@ And you see:
 
 ```javascript
 
-var sn = new snail.Snail(7); // size = 7
+var spiral = new ulamespiral.UlameSpiral(7); // size = 7
 ```
 
 And you see:
@@ -59,4 +58,4 @@ And you see:
 Demo
 ---
 
-Here is a live [demo](http://chaobin.github.io/2013/05/30/printing-spiral-numbers-with-js/ "snail").
+Here is a live [demo](http://chaobin.github.io/2013/05/30/printing-spiral-numbers-with-js/ "ulamespiral").
