@@ -1,5 +1,5 @@
-snail
-=====
+Ulame Spiral
+===
 
 An algorithm implemented in Javascript that prints an ["Ulame Spiral"](http://en.wikipedia.org/wiki/Ulam_spiral "Ulame Spiral").
 
