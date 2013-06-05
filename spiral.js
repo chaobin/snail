@@ -15,6 +15,57 @@
   window.ulamespiral = ulamespiral;
 
   /**
+   * Taken from someone else that I forgot the source.
+   *
+  **/
+  ulamespiral.Prime = function() {
+    // current prime number
+    this.prime = 1;
+
+    // return true if NUM is prime
+    this.isPrime = function(num) {
+      var result = true;
+      if (num !== 2) {
+        if (num % 2 == 0) {
+          result = false;
+        } else {
+          for (var x = 3; x <= Math.sqrt(num); x += 2) {
+            if (num % x == 0) result = false;
+          }
+        }
+      }
+      return result;
+    }
+
+    // return next prime number
+    this.nextPrime = function() {
+      this.prime++;
+      while (!this.isPrime(this.prime)) this.prime++;
+      return this.prime;
+    }
+  }
+
+  ulamespiral.Point = function (n, x, y) {
+    
+    var that = this;
+    that.n = n;
+    that.x = x;
+    that.y = y;
+
+    that.klass = 'point';
+
+    that.toDivWithID = function (_id) {
+      var div = $('<div></div>').addClass(that.klass);
+      div.attr({
+        'id': _id,
+        'title': that.n
+      });
+      return div;
+    }
+
+  }
+
+  /**
    * Class used to calculate the Ulame Spiral.
   **/
   ulamespiral.UlameSpiral = function (size) {
@@ -111,11 +162,11 @@
        * spiral to the center of the pattern.
        *
       **/
+      that.prepare();
+
       if (that._map.length > 0) { // Means already calculated.
         return;
       }
-
-      that.prepare();
 
       var n = 0, pow, topLeft, bottomLeft, bottomRight;
 
@@ -192,6 +243,7 @@
 
   ulamespiral.Plotter = function (options) {
     /**
+     *
      * Class that plots certain
      * interesting numbers, such as prime
      * number, triangle number, on a pre-calculated
@@ -201,29 +253,36 @@
 
     var that = this;
 
-    that.spiral = options.spiral;
-    that.$el = options.wrapper;
+    that.spiral = options.spiral; // ulamespiral instance
+    that.$el = $(options.el); // selector of container that this spiral goes into
+    that.tag = options.tag; // unique tag for this spiral plot
+    that.klass = 'spiral'; // class name for spiral div
 
-
-    that.print = function (chars) {
-      var chars = chars.toString();
-      document.write(chars);
+    that.init = function () {
+      /**
+       *
+       * Initializer for this class
+       *
+      **/
+      that.container = $('<div></div>').attr('id', 'us' + that.tag);
+      that.container.addClass(that.klass);
+      that.container.appendTo(that.$el);
     }
 
-    that.println = function (chars) {
-      document.writeln(chars + '</br>');
+    that.newLine = function () {
+      $('<br/>').appendTo(that.container);
     }
 
-    that.draw = function (spiral, plotter) {
+    that.plot = function (plotter) {
       /**
        * Print the pattern into ducument.
        * 
        * param spiral: the UlameSpiral instance
-       * plotter: a function that decides whether
+       * plotter: name of function that decides whether
        *    and how to plot a point.
       **/
 
-      var matrix = spiral._zeros;
+      var matrix = that.spiral._zeros;
       var size = matrix.length;
 
       for (var x = 0; x < size; x++) {
@@ -234,40 +293,63 @@
             // Ignore -1, the left and top 'border' for spirals of size of an even number.
             continue;
           }
-          plotter(n);
+          that[plotter](new ulamespiral.Point(n, x, y));
         }
-        that.println('');
+        that.newLine();
       }
     }
 
-    that.makeIdFromXY = function (x, y) {
-      return 'p' + x + y;
-    }
-
-    that.pointToDiv = function (n, x, y, isPrime) {
-      /**
-       * IMPORTANT! This function isn't something permenant.
-       *
-       */
-
-      var _id = that.makeIdFromXY(x, y);
-
-      if (isPrime) {
-        var div = '<div class="point prime" id=' + _id + '" title="' + n + '"></div>';
-      } else {
-        var div = '<div class="point" id=' + _id + '" title="' + n + '"></div>';
-      }
-
-      that.print(div);
-    }
-
-    that.plot = function (klassName, number) {
+    that.drawPoint = function (point, highlight) {
       
+      var _id = that.tag + point.x + point.y
+      var pointDiv = point.toDivWithID(_id);
+      if (highlight) {
+        pointDiv.addClass('highlight');
+      }
+      pointDiv.appendTo(that.container);
+    }
 
+    that.all = function (point) {
+      that.drawPoint(point, true);
+    }
+
+    that.prime = function (point) {
+      /**
+       *
+       * Plot all found prime numbers on the spiral
+       * pattern, to demonstrate an interesting feature
+       * of prime numbers, that they tend to appear
+       * in lines as many as possible in this spiral
+       * pattern.
+       *
+      **/
+      var highlight = false;
+
+      if (that.primeObj == undefined) {
+        that.primeObj = new ulamespiral.Prime();
+      }
+      highlight = that.primeObj.isPrime(point.n);
+      that.drawPoint(point, highlight);
+    }
+
+    that.triangle = function (point) {
+      /**
+       * Triangle numbers are numbers that you can
+       * lay them out into a triangle shape.
+       * e.g., 1, 3, 6, 10
+       *
+      **/
+      var highlight = false;
+      var squareRoot = Math.sqrt(8 * point.n + 1);
+      if ( (squareRoot % 1) === 0 ) {
+        highlight = true;
+      }
+      that.drawPoint(point, highlight);
     }
 
     that.breathe = function (divPoint) {
       /**
+       *
        * Replace something inside a located
        * point div to make it look funny.
        * Since being too fast makes it impossible
@@ -275,6 +357,7 @@
        * this function should be instead called
        * using setInterval() with a reasonable
        * amount of pause.
+       *
        *
       **/
       var oldCtt = divPoint.innerHTML;
@@ -284,6 +367,7 @@
 
     that.animate = function (pattern) {
       /**
+       *
        * Traverse the pattern, using the coordinates
        * to animate the pattern in one of the many funny
        * ways.
@@ -304,25 +388,8 @@
       }, 100);
     }
 
-    primes: function (number) {
-      /**
-       *
-       * Plot all found prime numbers on the spiral
-       * pattern, to demonstrate an interesting feature
-       * of prime numbers, that they tend to appear
-       * in a line as much as possible in this spiral
-       * pattern.
-       *
-      **/
-      if (that.prime == undefined) {
-        that.prime = new Prime();
-        that.isPrime = false;
-      }
-      that.isPrime = that.prime.isPrime(number);
-      if (that.isPrime) {
-        that.plot('prime', number);
-      }
-    }
+    // Initialize the instance
+    that.init();
 
   }
 

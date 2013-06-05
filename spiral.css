@@ -1,0 +1,27 @@
+body {
+  font-size: 65%;
+  line-height: 0.38;
+}
+
+.plots {
+  border: 1px solid black;
+  padding: 5px;
+  margin-top: 10px;
+}
+
+.spiral {
+  margin: 5px;
+}
+
+.point {
+  height: 2px;
+  width: 2px;
+  float: left;
+  padding: none;
+  margin: 1px;
+  text-align: center;
+}
+
+.highlight {
+  background-color: black;
+}
