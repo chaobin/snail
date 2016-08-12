@@ -55,7 +55,3 @@ And you see:
 37 36 35 34 33 32 31
 ```
 
-Demo
----
-
-Here is a live [demo](http://chaobin.github.io/2013/05/30/printing-spiral-numbers-with-js/ "ulamespiral").
